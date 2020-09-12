@@ -10,7 +10,7 @@ public class Grid<T> {
     private Vector3 origin;
     private T[,] gridArray;
 
-    public Grid(int width, int height, float tileSize, Vector3 origin, Func<Grid<T>, int, int, T> createGridObject) {
+    public Grid(int width, int height, float tileSize, Vector3 origin, Func<Grid<T>, int, int, bool, T> createGridObject) {
         this.height = height;
         this.width = width;
         this.tileSize = tileSize;
@@ -20,14 +20,18 @@ public class Grid<T> {
         for (int x = 0; x < gridArray.GetLength(0); x++) {
             for (int y = 0; y < gridArray.GetLength(1); y++) {
 
-                gridArray[x, y] = createGridObject(this, x, y);
+                gridArray[x, y] = createGridObject(this, x, y, GridOrigin.collision[x, y]);
             }
         }
 
-        bool debug = false;
+        bool debug = true;
         if (debug) {
             for (int x = 0; x < gridArray.GetLength(0); x++) {
                 for (int y = 0; y < gridArray.GetLength(1); y++) {
+                    if (GridOrigin.collision[x, y]) {
+                        Debug.DrawLine(getPosAtCoord(x, y), getPosAtCoord(x + 1, y + 1), Color.red, 100f);
+                        Debug.DrawLine(getPosAtCoord(x + 1, y), getPosAtCoord(x, y + 1), Color.red, 100f);
+                    }
                     Debug.DrawLine(getPosAtCoord(x, y), getPosAtCoord(x, y + 1), Color.white, 100f);
                     Debug.DrawLine(getPosAtCoord(x, y), getPosAtCoord(x + 1, y), Color.white, 100f);
                     Debug.DrawLine(getPosAtCoord(x + 1, y), getPosAtCoord(x + 1, y + 1), Color.white, 100f);

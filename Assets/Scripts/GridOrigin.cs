@@ -1,14 +1,36 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class GridOrigin : MonoBehaviour {
-    public static int width = 25;
-    public static int height = 15;
+    
+    public Tilemap wallTilemap;
+    public static int width;
+    public static int height;
     public static float cellSize = 1;
+    public static Tilemap collisionTilemap;
     public static Vector3 origin;
+    public static bool[,] collision;
 
     void Start() {
+        BoundsInt bounds = wallTilemap.cellBounds;
+        TileBase[] allTiles = wallTilemap.GetTilesBlock(bounds);
+        
+        // Setting width and height depending on Tilemap size
+        width = bounds.size.x;
+        height = bounds.size.y;
+
+        collision = new bool[width, height];
+
+        for (int x = 0; x < bounds.size.x; x++) {
+            for (int y = 0; y < bounds.size.y; y++) {
+                TileBase tile = allTiles[x + y * bounds.size.x];
+                collision[x, y] = tile != null;
+            }
+        }
+
+        collisionTilemap = wallTilemap;
         origin = gameObject.transform.position;
     }
 }

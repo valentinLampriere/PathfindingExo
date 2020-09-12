@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 public class Astar {
     private Grid<PathNode> grid;
@@ -13,7 +12,7 @@ public class Astar {
     private List<PathNode> closeList;
 
     public Astar() {
-        grid = new Grid<PathNode>(GridOrigin.width, GridOrigin.height, GridOrigin.cellSize, GridOrigin.origin, (Grid<PathNode> grid, int x, int y) => new PathNode(grid, x, y));
+        grid = new Grid<PathNode>(GridOrigin.width, GridOrigin.height, GridOrigin.cellSize, GridOrigin.origin, (Grid<PathNode> grid, int x, int y, bool o) => new PathNode(grid, x, y, o));
     }
 
     public Grid<PathNode> getGrid() {
@@ -53,6 +52,10 @@ public class Astar {
             foreach (PathNode neighbour in GetNeighboursList(currentNode)) {
                 if (closeList.Contains(neighbour))
                     continue;
+                if (neighbour.isObstacle) {
+                    closeList.Add(neighbour);
+                    continue;
+                }
                 int gCostHeuristic = currentNode.gCost + calcDistance(currentNode, neighbour);
                 if (gCostHeuristic < neighbour.gCost) {
                     neighbour.previousNode = currentNode;
