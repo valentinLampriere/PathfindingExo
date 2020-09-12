@@ -43,4 +43,12 @@ public class Grid<T> {
     public T getGridObject(int x, int y) {
         return gridArray[x, y];
     }
+
+    public int getWidth() {
+        return this.width;
+    }
+
+    public int getHeight() {
+        return this.height;
+    }
 }
