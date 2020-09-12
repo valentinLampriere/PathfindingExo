@@ -42,7 +42,7 @@ public class Grid<T> {
             Debug.DrawLine(getPosAtCoord(width, 0), getPosAtCoord(width, height), Color.white, 100f);
         }
     }
-    private Vector3 getPosAtCoord(int x, int y) {
+    public Vector3 getPosAtCoord(int x, int y) {
         return origin + new Vector3(x, y) * tileSize;
     }
 

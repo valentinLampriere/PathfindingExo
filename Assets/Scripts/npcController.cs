@@ -27,9 +27,13 @@ public class npcController : MonoBehaviour {
             pathfindingAstar.getGrid().getCoordAtPosition(player.transform.position, out playerX, out playerY);
             pathfindingAstar.getGrid().getCoordAtPosition(gameObject.transform.position, out npcX, out npcY);
             List<PathNode> path = pathfindingAstar.FindPath(npcX, npcY, playerX, playerY);
-            for (int i = 0; i < path.Count - 1; i++) {
-                Debug.DrawLine(GridOrigin.origin + new Vector3(path[i].x, path[i].y) * GridOrigin.cellSize, GridOrigin.origin + new Vector3(path[i + 1].x, path[i + 1].y) * GridOrigin.cellSize, Color.green, 1f);
-            }
+
+            rb.MovePosition(pathfindingAstar.getGrid().getPosAtCoord(path[1].x, path[1].y));
+
+            if (PlayerController.debugEnabled)
+                for (int i = 0; i < path.Count - 1; i++) {
+                    Debug.DrawLine(GridOrigin.origin + new Vector3(path[i].x, path[i].y) * GridOrigin.cellSize, GridOrigin.origin + new Vector3(path[i + 1].x, path[i + 1].y) * GridOrigin.cellSize, Color.green, 1f);
+                }
             yield return new WaitForSeconds(1);
         }
     }

@@ -8,6 +8,8 @@ public class PlayerController : MonoBehaviour {
     Vector2 movement;
     SpriteRenderer sprite;
     Rigidbody2D rb;
+    public static bool debugEnabled = false;
+
 
     void Start() {
         sprite = gameObject.GetComponent<SpriteRenderer>();
@@ -21,6 +23,14 @@ public class PlayerController : MonoBehaviour {
             sprite.flipX = true;
         else if (movement.x > 0)
             sprite.flipX = false;
+        if (Input.GetKey(KeyCode.Space)) {
+            debugEnabled = true;
+            
+            
+
+        } else {
+            debugEnabled = false;
+        }
     }
     void FixedUpdate() {
         rb.MovePosition(rb.position + movement * speed * Time.fixedDeltaTime);
