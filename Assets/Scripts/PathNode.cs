@@ -15,11 +15,10 @@ public class PathNode {
 
     public PathNode previousNode;
 
-    public PathNode(Grid<PathNode> grid,  int x, int y, bool isObstacle) {
+    public PathNode(Grid<PathNode> grid, int x, int y) {
         this.grid = grid;
         this.x = x;
         this.y = y;
-        this.isObstacle = isObstacle;
     }
 
     public int calcFCost() {

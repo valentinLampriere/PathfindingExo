@@ -11,11 +11,16 @@ public class Astar {
     private List<PathNode> openList;
     private List<PathNode> closeList;
 
-    public Astar(int width, int height, Vector3 origin) {
-        grid = new Grid<PathNode>(width, height, 10f, origin);
+    public Astar() {
+        //grid = new Grid<PathNode>(GridOrigin.width, GridOrigin.height, GridOrigin.cellSize, GridOrigin.origin, (Grid<PathNode> g, int x, int y, bool o) => new PathNode(g, x, y, o));
+        grid = new Grid<PathNode>(GridOrigin.width, GridOrigin.height, GridOrigin.cellSize, GridOrigin.origin, (Grid<PathNode> grid, int x, int y) => new PathNode(grid, x, y));
     }
 
-    private List<PathNode> FindPath(int startX, int startY, int endX, int endY) {
+    public Grid<PathNode> getGrid() {
+        return this.grid;
+    }
+
+    public List<PathNode> FindPath(int startX, int startY, int endX, int endY) {
         PathNode startNode = grid.getGridObject(startX, startY);
         PathNode endNode = grid.getGridObject(endX, endY);
 
@@ -26,9 +31,11 @@ public class Astar {
         for (int x = 0; x < grid.getWidth(); x++) {
             for (int y = 0; y < grid.getHeight(); y++) {
                 PathNode node = grid.getGridObject(x, y);
-                node.gCost = int.MaxValue;
-                node.calcFCost();
-                node.previousNode = null;
+                if (node != null) {
+                    node.gCost = int.MaxValue;
+                    node.calcFCost();
+                    node.previousNode = null;
+                }
             }
         }
 
