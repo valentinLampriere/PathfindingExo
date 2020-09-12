@@ -2,19 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Grid {
+public class Grid<T> {
     private int height;
     private int width;
     private float tileSize;
     private Vector3 origin;
-    private bool[,] gridArray;
+    private T[,] gridArray;
 
     public Grid(int width, int height, float tileSize, Vector3 origin) {
         this.height = height;
         this.width = width;
         this.tileSize = tileSize;
         this.origin = origin;
-        gridArray = new bool[width, height];
+        gridArray = new T[width, height];
 
         for (int x = 0; x < gridArray.GetLength(0); x++) {
             for (int y = 0; y < gridArray.GetLength(1); y++) {
@@ -36,11 +36,11 @@ public class Grid {
         y = Mathf.FloorToInt((position - origin).y / tileSize);
     }
 
-    public void setWall(int x, int y, bool isWall) {
-        gridArray[x, y] = isWall;
+    public void setValue(int x, int y, T value) {
+        gridArray[x, y] = value;
     }
 
-    public bool isWall(int x, int y) {
+    public T getGridObject(int x, int y) {
         return gridArray[x, y];
     }
 }
