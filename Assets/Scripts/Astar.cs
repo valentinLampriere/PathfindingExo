@@ -1,18 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class Astar {
     private Grid<PathNode> grid;
 
-    private const int MOVE_STRAIGHT_LINE = 10;
-    private const int MOVE_DIAGONAL_LINE = 14;
+    private const int MOVE_STRAIGHT_COST = 10;
+    private const int MOVE_DIAGONAL_COST = 14;
 
     private List<PathNode> openList;
     private List<PathNode> closeList;
 
     public Astar() {
-        //grid = new Grid<PathNode>(GridOrigin.width, GridOrigin.height, GridOrigin.cellSize, GridOrigin.origin, (Grid<PathNode> g, int x, int y, bool o) => new PathNode(g, x, y, o));
         grid = new Grid<PathNode>(GridOrigin.width, GridOrigin.height, GridOrigin.cellSize, GridOrigin.origin, (Grid<PathNode> grid, int x, int y) => new PathNode(grid, x, y));
     }
 
@@ -43,49 +43,84 @@ public class Astar {
         startNode.hCost = calcDistance(startNode, endNode);
         startNode.calcFCost();
 
-        while(openList.Count > 0) {
-            PathNode closestNode = openList[0];
-            foreach (PathNode aNode in openList) {
-                aNode.gCost = aNode.previousNode.gCost + calcDistance(aNode, aNode.previousNode);
-                aNode.hCost = calcDistance(aNode, endNode);
-                aNode.calcFCost();
-                if (aNode.fCost < closestNode.fCost) {
-                    closestNode = aNode;
-                }
+        while (openList.Count > 0) {
+            PathNode currentNode = GetLowestFCostNode(openList);
+            if (currentNode == endNode) {
+                return CalculatePath(endNode);
             }
-            if (closestNode == endNode) {
-                break;
-            }
-            openList.Remove(closestNode);
-            closeList.Add(closestNode);
-            for (int i = -1; i <= 1; i++) {
-                for (int j = -1; j <= 1; j++) {
-                    if (i == j && i == 0) continue;
+            openList.Remove(currentNode);
+            closeList.Add(currentNode);
+            foreach (PathNode neighbour in GetNeighboursList(currentNode)) {
+                if (closeList.Contains(neighbour))
+                    continue;
+                int gCostHeuristic = currentNode.gCost + calcDistance(currentNode, neighbour);
+                if (gCostHeuristic < neighbour.gCost) {
+                    neighbour.previousNode = currentNode;
+                    neighbour.gCost = gCostHeuristic;
+                    neighbour.hCost = calcDistance(neighbour, endNode);
+                    neighbour.calcFCost();
 
-                    PathNode neighbourNode = grid.getGridObject(closestNode.x + i, closestNode.y + j);
-                    if (!openList.Contains(neighbourNode) && !closeList.Contains(neighbourNode) && !neighbourNode.isObstacle) {
-
-                        if (neighbourNode.gCost + calcDistance(closestNode, neighbourNode) < neighbourNode.gCost) {
-                            neighbourNode.previousNode = closestNode;
-                            neighbourNode.gCost = neighbourNode.gCost + calcDistance(closestNode, neighbourNode);
-                            neighbourNode.hCost = calcDistance(neighbourNode, endNode);
-                            neighbourNode.calcFCost();
-                        }
-                        openList.Add(neighbourNode);
+                    if (!openList.Contains(neighbour)) {
+                        openList.Add(neighbour);
                     }
                 }
             }
         }
-        pathToTarget.Add(endNode);
-        while (pathToTarget[pathToTarget.Count -1] != startNode) {
-            pathToTarget.Add(pathToTarget[pathToTarget.Count - 1].previousNode);
-        }
-        return pathToTarget;
+        return null;
     }
+
     private int calcDistance(PathNode n1, PathNode n2) {
         int xDist = Mathf.Abs(n1.x - n2.x);
         int yDist = Mathf.Abs(n1.y - n2.y);
         int tileDist = Mathf.Abs(xDist - yDist);
-        return MOVE_DIAGONAL_LINE * Mathf.Min(xDist, yDist) + MOVE_STRAIGHT_LINE + tileDist;
+        return MOVE_DIAGONAL_COST * Mathf.Min(xDist, yDist) + MOVE_STRAIGHT_COST * tileDist;
+    }
+
+    private PathNode GetLowestFCostNode(List<PathNode> nodes) {
+        PathNode lowestFCostNode = nodes[0];
+        for (int i = 1; i < nodes.Count; i++) {
+            if(nodes[i].fCost < lowestFCostNode.fCost) {
+                lowestFCostNode = nodes[i];
+            }
+        }
+        return lowestFCostNode;
+    }
+
+    private List<PathNode> CalculatePath(PathNode endNode) {
+        List<PathNode> path = new List<PathNode>();
+        path.Add(endNode);
+        PathNode currentNode = endNode;
+        while(currentNode.previousNode != null) {
+            path.Add(currentNode.previousNode);
+            currentNode = currentNode.previousNode;
+        }
+        path.Reverse();
+        return path;
+    }
+
+    private List<PathNode> GetNeighboursList(PathNode node) {
+        List<PathNode> neighbours = new List<PathNode>();
+        if (node.x - 1 >= 0) {
+            neighbours.Add(GetNode(node.x - 1, node.y));
+            if (node.y - 1 >= 0)
+                neighbours.Add(GetNode(node.x - 1, node.y - 1));
+            if (node.y + 1 < grid.getHeight())
+                neighbours.Add(GetNode(node.x - 1, node.y + 1));
+        }
+        if (node.x + 1 < grid.getWidth()) {
+            neighbours.Add(GetNode(node.x + 1, node.y));
+            if (node.y - 1 >= 0)
+                neighbours.Add(GetNode(node.x + 1, node.y - 1));
+            if (node.y + 1 < grid.getHeight())
+                neighbours.Add(GetNode(node.x + 1, node.y + 1));
+        }
+        if (node.y - 1 >= 0)
+            neighbours.Add(GetNode(node.x, node.y - 1));
+        if (node.y + 1 < grid.getHeight())
+            neighbours.Add(GetNode(node.x, node.y + 1));
+        return neighbours;
+    }
+    private PathNode GetNode(int x, int y) {
+        return grid.getGridObject(x, y);
     }
 }

@@ -19,20 +19,24 @@ public class Grid<T> {
 
         for (int x = 0; x < gridArray.GetLength(0); x++) {
             for (int y = 0; y < gridArray.GetLength(1); y++) {
+
                 gridArray[x, y] = createGridObject(this, x, y);
             }
         }
 
-        for (int x = 0; x < gridArray.GetLength(0); x++) {
-            for (int y = 0; y < gridArray.GetLength(1); y++) {
-                Debug.DrawLine(getPosAtCoord(x, y), getPosAtCoord(x, y + 1), Color.white, 100f);
-                Debug.DrawLine(getPosAtCoord(x, y), getPosAtCoord(x + 1, y), Color.white, 100f);
-                Debug.DrawLine(getPosAtCoord(x + 1, y), getPosAtCoord(x + 1, y + 1), Color.white, 100f);
-                Debug.DrawLine(getPosAtCoord(x, y + 1), getPosAtCoord(x + 1, y + 1), Color.white, 100f);
+        bool debug = false;
+        if (debug) {
+            for (int x = 0; x < gridArray.GetLength(0); x++) {
+                for (int y = 0; y < gridArray.GetLength(1); y++) {
+                    Debug.DrawLine(getPosAtCoord(x, y), getPosAtCoord(x, y + 1), Color.white, 100f);
+                    Debug.DrawLine(getPosAtCoord(x, y), getPosAtCoord(x + 1, y), Color.white, 100f);
+                    Debug.DrawLine(getPosAtCoord(x + 1, y), getPosAtCoord(x + 1, y + 1), Color.white, 100f);
+                    Debug.DrawLine(getPosAtCoord(x, y + 1), getPosAtCoord(x + 1, y + 1), Color.white, 100f);
+                }
             }
+            Debug.DrawLine(getPosAtCoord(0, height), getPosAtCoord(width, height), Color.white, 100f);
+            Debug.DrawLine(getPosAtCoord(width, 0), getPosAtCoord(width, height), Color.white, 100f);
         }
-        Debug.DrawLine(getPosAtCoord(0, height), getPosAtCoord(width, height), Color.white, 100f);
-        Debug.DrawLine(getPosAtCoord(width, 0), getPosAtCoord(width, height), Color.white, 100f);
     }
     private Vector3 getPosAtCoord(int x, int y) {
         return origin + new Vector3(x, y) * tileSize;
@@ -49,9 +53,9 @@ public class Grid<T> {
     }
 
     public T getGridObject(int x, int y) {
-        if (x >= 0 && y >= 0 && x < this.width && y < this.height)
+        if (x >= 0 && y >= 0 && x < this.width && y < this.height) {
             return gridArray[x, y];
-        else
+        } else
             return default(T);
     }
 

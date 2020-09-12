@@ -25,4 +25,8 @@ public class PathNode {
         fCost = gCost + hCost;
         return fCost;
     }
+
+    public override string ToString() {
+        return "[PathNode] " + this.x + ", " + this.y ;
+    }
 }
