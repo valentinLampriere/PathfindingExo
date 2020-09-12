@@ -11,7 +11,7 @@ public class npcController : MonoBehaviour
     Rigidbody2D rb;
     CircleCollider2D circleCollider;
 
-    IEnumerator Start() {
+    /*IEnumerator Start() {
         sprite = gameObject.GetComponent<SpriteRenderer>();
         rb = gameObject.GetComponent<Rigidbody2D>();
         circleCollider = gameObject.GetComponent<CircleCollider2D>();
@@ -23,5 +23,9 @@ public class npcController : MonoBehaviour
             rb.MovePosition(rb.position + movement * speed * Time.fixedDeltaTime);
             yield return new WaitForSeconds(1);
         }
+    }*/
+    void Update() {
+        if (Input.GetMouseButtonDown(0)) {
+
+        }
     }
-}

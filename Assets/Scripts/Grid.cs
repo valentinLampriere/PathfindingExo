@@ -37,11 +37,15 @@ public class Grid<T> {
     }
 
     public void setValue(int x, int y, T value) {
-        gridArray[x, y] = value;
+        if (x > 0 && y > 0 && x < this.width && y < this.height)
+            gridArray[x, y] = value;
     }
 
     public T getGridObject(int x, int y) {
-        return gridArray[x, y];
+        if (x > 0 && y > 0 && x < this.width && y < this.height)
+            return gridArray[x, y];
+        else
+            return default(T);
     }
 
     public int getWidth() {

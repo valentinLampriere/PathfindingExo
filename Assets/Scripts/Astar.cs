@@ -11,8 +11,8 @@ public class Astar {
     private List<PathNode> openList;
     private List<PathNode> closeList;
 
-    public Astar(int width, int height) {
-        grid = new Grid<PathNode>(width, height, 10f, Vector3.zero);
+    public Astar(int width, int height, Vector3 origin) {
+        grid = new Grid<PathNode>(width, height, 10f, origin);
     }
 
     private List<PathNode> FindPath(int startX, int startY, int endX, int endY) {
@@ -33,33 +33,38 @@ public class Astar {
         }
 
         startNode.gCost = 0;
-        startNode.hCost = calcHeuristicDistance(startNode, endNode);
+        startNode.hCost = calcDistance(startNode, endNode);
         startNode.calcFCost();
 
         while(openList.Count > 0) {
             PathNode closestNode = openList[0];
             foreach (PathNode aNode in openList) {
-                if (endNode == aNode) {
-                    break;
-                }
-                aNode.gCost = aNode.previousNode.gCost + calcHeuristicDistance(aNode, aNode.previousNode);
-                aNode.hCost = calcHeuristicDistance(aNode, endNode);
+                aNode.gCost = aNode.previousNode.gCost + calcDistance(aNode, aNode.previousNode);
+                aNode.hCost = calcDistance(aNode, endNode);
                 aNode.calcFCost();
                 if (aNode.fCost < closestNode.fCost) {
                     closestNode = aNode;
                 }
             }
+            if (closestNode == endNode) {
+                break;
+            }
             openList.Remove(closestNode);
             closeList.Add(closestNode);
             for (int i = -1; i <= 1; i++) {
                 for (int j = -1; j <= 1; j++) {
+                    if (i == j && i == 0) continue;
+
                     PathNode neighbourNode = grid.getGridObject(closestNode.x + i, closestNode.y + j);
                     if (!openList.Contains(neighbourNode) && !closeList.Contains(neighbourNode) && !neighbourNode.isObstacle) {
-                        openList.Add(neighbourNode);
 
-                        neighbourNode.gCost = neighbourNode.previousNode.gCost + calcHeuristicDistance(neighbourNode, neighbourNode.previousNode);
-                        neighbourNode.hCost = calcHeuristicDistance(neighbourNode, endNode);
-                        neighbourNode.calcFCost();
+                        if (neighbourNode.gCost + calcDistance(closestNode, neighbourNode) < neighbourNode.gCost) {
+                            neighbourNode.previousNode = closestNode;
+                            neighbourNode.gCost = neighbourNode.gCost + calcDistance(closestNode, neighbourNode);
+                            neighbourNode.hCost = calcDistance(neighbourNode, endNode);
+                            neighbourNode.calcFCost();
+                        }
+                        openList.Add(neighbourNode);
                     }
                 }
             }
@@ -70,7 +75,7 @@ public class Astar {
         }
         return pathToTarget;
     }
-    private int calcHeuristicDistance(PathNode n1, PathNode n2) {
+    private int calcDistance(PathNode n1, PathNode n2) {
         int xDist = Mathf.Abs(n1.x - n2.x);
         int yDist = Mathf.Abs(n1.y - n2.y);
         int tileDist = Mathf.Abs(xDist - yDist);
