@@ -1,27 +1,38 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public class NPC : MonoBehaviour {
     
     public bool isDijkstra;
+    public List<Sprite> sprites;
 
     Pathfinding pathfinding;
 
     GameObject player;
     Rigidbody2D rb;
+    SpriteRenderer spriteRenderer;
     List<PathNode> path;
+
+    Text debugText; 
 
     IEnumerator Start() {
 
-        if (isDijkstra)
+        if (isDijkstra) {
             pathfinding = new Dijkstra();
-        else
+            debugText.text = "Dijkstra";
+        } else {
             pathfinding = new Astar();
-
+            debugText.text = "A*";
+        }
         player = GameObject.FindWithTag("Player");
         rb = gameObject.GetComponent<Rigidbody2D>();
+        spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+
+        spriteRenderer.sprite = sprites[Random.Range(0, sprites.Count - 1)];
+
         yield return Move();
     }
     IEnumerator Move() {
@@ -37,8 +48,8 @@ public class NPC : MonoBehaviour {
             yield return new WaitForSeconds(1);
         }
     }
-    private void OnMouseOver() {
-        for (int i = 0; i < path.Count - 1; i++) {
+    void OnMouseOver() {
+        for (int i = 1; i < path.Count - 1; i++) {
             Debug.DrawLine(GridOrigin.origin + new Vector3(path[i].x, path[i].y) * GridOrigin.cellSize + Vector3.one * GridOrigin.cellSize / 2, GridOrigin.origin + new Vector3(path[i + 1].x, path[i + 1].y) * GridOrigin.cellSize + Vector3.one * GridOrigin.cellSize / 2, Color.blue, 1f);
         }
     }
