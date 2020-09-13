@@ -10,6 +10,8 @@ public class Astar : Pathfinding {
     public Astar() : base() {}
     
     public override List<PathNode> FindPath(int startX, int startY, int endX, int endY) {
+
+        int complexity = 0;
         PathNode startNode = grid.getGridObject(startX, startY);
         PathNode endNode = grid.getGridObject(endX, endY);
 
@@ -34,7 +36,9 @@ public class Astar : Pathfinding {
 
         while (openList.Count > 0) {
             PathNode currentNode = getClosestNode(openList);
+            complexity++;
             if (currentNode == endNode) {
+                Debug.Log("A* : " + complexity);
                 return CalculatePath(endNode);
             }
             openList.Remove(currentNode);
@@ -59,6 +63,7 @@ public class Astar : Pathfinding {
                 }
             }
         }
+        Debug.Log("A* : " + complexity);
         return null;
     }
 }

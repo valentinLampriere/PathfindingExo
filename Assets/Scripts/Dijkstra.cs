@@ -7,7 +7,8 @@ public class Dijkstra : Pathfinding {
     public Dijkstra() : base() {}
 
     public override List<PathNode> FindPath(int startX, int startY, int endX, int endY) {
-        List<PathNode> queue = new List<PathNode>();
+        int complexity = 0;
+        List <PathNode> queue = new List<PathNode>();
         PathNode startNode = grid.getGridObject(startX, startY);
         PathNode endNode = grid.getGridObject(endX, endY);
 
@@ -35,11 +36,14 @@ public class Dijkstra : Pathfinding {
                     neighbour.fCost = newDist;
                     neighbour.previousNode = currentNode;
                 }
+                complexity++;
                 if (neighbour == endNode) {
+                    Debug.Log("DIJKSTRA : " + complexity);
                     return CalculatePath(endNode);
                 }
             }
         }
+        Debug.Log("DIJKSTRA : " + complexity);
         return null;
     }
 }

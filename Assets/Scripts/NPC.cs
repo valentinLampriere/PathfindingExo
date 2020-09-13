@@ -40,14 +40,14 @@ public class NPC : MonoBehaviour {
             pathfinding.getGrid().getCoordAtPosition(gameObject.transform.position, out npcX, out npcY);
             path = pathfinding.FindPath(npcX, npcY, playerX, playerY);
 
-            if (path != null)
+            if (path != null && path.Count > 1)
                 rb.MovePosition(pathfinding.getGrid().getPosAtCoord(path[1].x, path[1].y) + Vector3.one * GridOrigin.cellSize / 2);
             
             yield return new WaitForSeconds(1);
         }
     }
     void Update() {
-        if (Input.GetKey(KeyCode.Space) && path != null) {
+        if (Input.GetKey(KeyCode.Space) && path != null && path.Count > 1) {
             Color c = Color.blue;
             if (isDijkstra)
                 c = Color.green;
