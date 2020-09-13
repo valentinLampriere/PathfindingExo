@@ -19,13 +19,10 @@ public class NPC : MonoBehaviour {
     Text debugText; 
 
     IEnumerator Start() {
-
         if (isDijkstra) {
             pathfinding = new Dijkstra();
-            debugText.text = "Dijkstra";
         } else {
             pathfinding = new Astar();
-            debugText.text = "A*";
         }
         player = GameObject.FindWithTag("Player");
         rb = gameObject.GetComponent<Rigidbody2D>();
@@ -49,8 +46,32 @@ public class NPC : MonoBehaviour {
         }
     }
     void OnMouseOver() {
+        Color c = Color.blue;
+        if (isDijkstra)
+            c = Color.green;
         for (int i = 1; i < path.Count - 1; i++) {
-            Debug.DrawLine(GridOrigin.origin + new Vector3(path[i].x, path[i].y) * GridOrigin.cellSize + Vector3.one * GridOrigin.cellSize / 2, GridOrigin.origin + new Vector3(path[i + 1].x, path[i + 1].y) * GridOrigin.cellSize + Vector3.one * GridOrigin.cellSize / 2, Color.blue, 1f);
+            DrawLine(GridOrigin.origin + new Vector3(path[i].x, path[i].y) * GridOrigin.cellSize + Vector3.one * GridOrigin.cellSize / 2, GridOrigin.origin + new Vector3(path[i + 1].x, path[i + 1].y) * GridOrigin.cellSize + Vector3.one * GridOrigin.cellSize / 2, c);
+            //Debug.DrawLine(GridOrigin.origin + new Vector3(path[i].x, path[i].y) * GridOrigin.cellSize + Vector3.one * GridOrigin.cellSize / 2, GridOrigin.origin + new Vector3(path[i + 1].x, path[i + 1].y) * GridOrigin.cellSize + Vector3.one * GridOrigin.cellSize / 2, c, 0.05f);
         }
     }
+
+    /* Taken from https://answers.unity.com/questions/8338/how-to-draw-a-line-using-script.html */
+    void DrawLine(Vector3 start, Vector3 end, Color color, float duration = 0.2f) {
+        GameObject myLine = new GameObject();
+        myLine.transform.position = start;
+        myLine.AddComponent<LineRenderer>();
+        LineRenderer lr = myLine.GetComponent<LineRenderer>();
+        lr.material = new Material(Shader.Find("Sprites/Default"));
+        lr.material.color = color;
+        lr.sortingOrder = 10;
+        lr.startColor = color;
+        lr.endColor = color;
+        lr.startWidth = 0.1f;
+        lr.endWidth = 0.1f;
+        lr.SetPosition(0, start);
+        lr.SetPosition(1, end);
+        GameObject.Destroy(myLine, duration);
+    }
+
+
 }
