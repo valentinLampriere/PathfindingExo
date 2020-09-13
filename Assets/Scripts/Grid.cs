@@ -23,24 +23,6 @@ public class Grid<T> {
                 gridArray[x, y] = createGridObject(this, x, y, GridOrigin.collision[x, y]);
             }
         }
-
-        bool debug = true;
-        if (debug) {
-            for (int x = 0; x < gridArray.GetLength(0); x++) {
-                for (int y = 0; y < gridArray.GetLength(1); y++) {
-                    if (GridOrigin.collision[x, y]) {
-                        Debug.DrawLine(getPosAtCoord(x, y), getPosAtCoord(x + 1, y + 1), Color.red, 100f);
-                        Debug.DrawLine(getPosAtCoord(x + 1, y), getPosAtCoord(x, y + 1), Color.red, 100f);
-                    }
-                    Debug.DrawLine(getPosAtCoord(x, y), getPosAtCoord(x, y + 1), Color.white, 100f);
-                    Debug.DrawLine(getPosAtCoord(x, y), getPosAtCoord(x + 1, y), Color.white, 100f);
-                    Debug.DrawLine(getPosAtCoord(x + 1, y), getPosAtCoord(x + 1, y + 1), Color.white, 100f);
-                    Debug.DrawLine(getPosAtCoord(x, y + 1), getPosAtCoord(x + 1, y + 1), Color.white, 100f);
-                }
-            }
-            Debug.DrawLine(getPosAtCoord(0, height), getPosAtCoord(width, height), Color.white, 100f);
-            Debug.DrawLine(getPosAtCoord(width, 0), getPosAtCoord(width, height), Color.white, 100f);
-        }
     }
     public Vector3 getPosAtCoord(int x, int y) {
         return origin + new Vector3(x, y) * tileSize;
@@ -69,5 +51,22 @@ public class Grid<T> {
 
     public int getHeight() {
         return this.height;
+    }
+
+    public void displayGrid() {
+        for (int x = 0; x < gridArray.GetLength(0); x++) {
+            for (int y = 0; y < gridArray.GetLength(1); y++) {
+                if (GridOrigin.collision[x, y]) {
+                    Debug.DrawLine(getPosAtCoord(x, y), getPosAtCoord(x + 1, y + 1), Color.red, 0.05f);
+                    Debug.DrawLine(getPosAtCoord(x + 1, y), getPosAtCoord(x, y + 1), Color.red, 0.05f);
+                }
+                Debug.DrawLine(getPosAtCoord(x, y), getPosAtCoord(x, y + 1), Color.black, 0.05f);
+                Debug.DrawLine(getPosAtCoord(x, y), getPosAtCoord(x + 1, y), Color.black, 0.05f);
+                Debug.DrawLine(getPosAtCoord(x + 1, y), getPosAtCoord(x + 1, y + 1), Color.black, 0.05f);
+                Debug.DrawLine(getPosAtCoord(x, y + 1), getPosAtCoord(x + 1, y + 1), Color.black, 0.05f);
+            }
+        }
+        Debug.DrawLine(getPosAtCoord(0, height), getPosAtCoord(width, height), Color.black, 0.05f);
+        Debug.DrawLine(getPosAtCoord(width, 0), getPosAtCoord(width, height), Color.black, 0.05f);
     }
 }

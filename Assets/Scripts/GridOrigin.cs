@@ -12,6 +12,7 @@ public class GridOrigin : MonoBehaviour {
     public static Tilemap collisionTilemap;
     public static Vector3 origin;
     public static bool[,] collision;
+    //public static Grid<PathNode> grid;
 
     void Start() {
         BoundsInt bounds = wallTilemap.cellBounds;
@@ -32,5 +33,7 @@ public class GridOrigin : MonoBehaviour {
 
         collisionTilemap = wallTilemap;
         origin = gameObject.transform.position;
+
+        //grid = new Grid<PathNode>(width, height, cellSize, origin, (Grid<PathNode> grid, int x, int y, bool o) => new PathNode(grid, x, y, o));
     }
 }

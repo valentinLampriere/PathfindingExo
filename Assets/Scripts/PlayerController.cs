@@ -25,9 +25,6 @@ public class PlayerController : MonoBehaviour {
             sprite.flipX = false;
         if (Input.GetKey(KeyCode.Space)) {
             debugEnabled = true;
-            
-            
-
         } else {
             debugEnabled = false;
         }
