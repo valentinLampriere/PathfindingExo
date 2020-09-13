@@ -40,18 +40,20 @@ public class NPC : MonoBehaviour {
             pathfinding.getGrid().getCoordAtPosition(gameObject.transform.position, out npcX, out npcY);
             path = pathfinding.FindPath(npcX, npcY, playerX, playerY);
 
-            rb.MovePosition(pathfinding.getGrid().getPosAtCoord(path[1].x, path[1].y) + Vector3.one * GridOrigin.cellSize / 2);
+            if (path != null)
+                rb.MovePosition(pathfinding.getGrid().getPosAtCoord(path[1].x, path[1].y) + Vector3.one * GridOrigin.cellSize / 2);
             
             yield return new WaitForSeconds(1);
         }
     }
-    void OnMouseOver() {
-        Color c = Color.blue;
-        if (isDijkstra)
-            c = Color.green;
-        for (int i = 1; i < path.Count - 1; i++) {
-            DrawLine(GridOrigin.origin + new Vector3(path[i].x, path[i].y) * GridOrigin.cellSize + Vector3.one * GridOrigin.cellSize / 2, GridOrigin.origin + new Vector3(path[i + 1].x, path[i + 1].y) * GridOrigin.cellSize + Vector3.one * GridOrigin.cellSize / 2, c);
-            //Debug.DrawLine(GridOrigin.origin + new Vector3(path[i].x, path[i].y) * GridOrigin.cellSize + Vector3.one * GridOrigin.cellSize / 2, GridOrigin.origin + new Vector3(path[i + 1].x, path[i + 1].y) * GridOrigin.cellSize + Vector3.one * GridOrigin.cellSize / 2, c, 0.05f);
+    void Update() {
+        if (Input.GetKey(KeyCode.Space) && path != null) {
+            Color c = Color.blue;
+            if (isDijkstra)
+                c = Color.green;
+            for (int i = 1; i < path.Count - 1; i++) {
+                DrawLine(GridOrigin.origin + new Vector3(path[i].x, path[i].y) * GridOrigin.cellSize + Vector3.one * GridOrigin.cellSize / 2, GridOrigin.origin + new Vector3(path[i + 1].x, path[i + 1].y) * GridOrigin.cellSize + Vector3.one * GridOrigin.cellSize / 2, c, 0.05f);
+            }
         }
     }
 

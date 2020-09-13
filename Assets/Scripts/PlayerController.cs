@@ -23,8 +23,6 @@ public class PlayerController : MonoBehaviour {
             sprite.flipX = true;
         else if (movement.x > 0)
             sprite.flipX = false;
-
-        debugEnabled = Input.GetKey(KeyCode.Space);
     }
     void FixedUpdate() {
         rb.MovePosition(rb.position + movement * speed * Time.fixedDeltaTime);
