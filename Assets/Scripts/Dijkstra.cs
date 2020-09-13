@@ -29,12 +29,17 @@ public class Dijkstra : Pathfinding {
             queue.Remove(currentNode);
             foreach (PathNode neighbour in GetNeighboursList(currentNode)) {
                 int newDist = currentNode.fCost + calcDistance(currentNode, neighbour);
+                if (neighbour.isObstacle)
+                    newDist = int.MaxValue;
                 if (newDist < neighbour.fCost) {
                     neighbour.fCost = newDist;
                     neighbour.previousNode = currentNode;
                 }
+                if (neighbour == endNode) {
+                    return CalculatePath(endNode);
+                }
             }
         }
-        return CalculatePath(endNode);
+        return null;
     }
 }

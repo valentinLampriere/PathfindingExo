@@ -2,24 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Astar {
-    private Grid<PathNode> grid;
-
-    private const int MOVE_STRAIGHT_COST = 10;
-    private const int MOVE_DIAGONAL_COST = 14;
+public class Astar : Pathfinding {
 
     private List<PathNode> openList;
     private List<PathNode> closeList;
 
-    public Astar() {
-        grid = new Grid<PathNode>(GridOrigin.width, GridOrigin.height, GridOrigin.cellSize, GridOrigin.origin, (Grid<PathNode> grid, int x, int y, bool o) => new PathNode(grid, x, y, o));
-    }
-
-    public Grid<PathNode> getGrid() {
-        return this.grid;
-    }
-
-    public List<PathNode> FindPath(int startX, int startY, int endX, int endY) {
+    public Astar() : base() {}
+    
+    public override List<PathNode> FindPath(int startX, int startY, int endX, int endY) {
         PathNode startNode = grid.getGridObject(startX, startY);
         PathNode endNode = grid.getGridObject(endX, endY);
 
@@ -43,7 +33,7 @@ public class Astar {
         startNode.calcFCost();
 
         while (openList.Count > 0) {
-            PathNode currentNode = GetLowestFCostNode(openList);
+            PathNode currentNode = getClosestNode(openList);
             if (currentNode == endNode) {
                 return CalculatePath(endNode);
             }
@@ -70,60 +60,5 @@ public class Astar {
             }
         }
         return null;
-    }
-
-    private int calcDistance(PathNode n1, PathNode n2) {
-        int xDist = Mathf.Abs(n1.x - n2.x);
-        int yDist = Mathf.Abs(n1.y - n2.y);
-        int tileDist = Mathf.Abs(xDist - yDist);
-        return MOVE_DIAGONAL_COST * Mathf.Min(xDist, yDist) + MOVE_STRAIGHT_COST * tileDist;
-    }
-
-    private PathNode GetLowestFCostNode(List<PathNode> nodes) {
-        PathNode lowestFCostNode = nodes[0];
-        for (int i = 1; i < nodes.Count; i++) {
-            if(nodes[i].fCost < lowestFCostNode.fCost) {
-                lowestFCostNode = nodes[i];
-            }
-        }
-        return lowestFCostNode;
-    }
-
-    private List<PathNode> CalculatePath(PathNode endNode) {
-        List<PathNode> path = new List<PathNode>();
-        path.Add(endNode);
-        PathNode currentNode = endNode;
-        while(currentNode.previousNode != null) {
-            path.Add(currentNode.previousNode);
-            currentNode = currentNode.previousNode;
-        }
-        path.Reverse();
-        return path;
-    }
-
-    private List<PathNode> GetNeighboursList(PathNode node) {
-        List<PathNode> neighbours = new List<PathNode>();
-        if (node.x - 1 >= 0) {
-            neighbours.Add(GetNode(node.x - 1, node.y));
-            if (node.y - 1 >= 0)
-                neighbours.Add(GetNode(node.x - 1, node.y - 1));
-            if (node.y + 1 < grid.getHeight())
-                neighbours.Add(GetNode(node.x - 1, node.y + 1));
-        }
-        if (node.x + 1 < grid.getWidth()) {
-            neighbours.Add(GetNode(node.x + 1, node.y));
-            if (node.y - 1 >= 0)
-                neighbours.Add(GetNode(node.x + 1, node.y - 1));
-            if (node.y + 1 < grid.getHeight())
-                neighbours.Add(GetNode(node.x + 1, node.y + 1));
-        }
-        if (node.y - 1 >= 0)
-            neighbours.Add(GetNode(node.x, node.y - 1));
-        if (node.y + 1 < grid.getHeight())
-            neighbours.Add(GetNode(node.x, node.y + 1));
-        return neighbours;
-    }
-    private PathNode GetNode(int x, int y) {
-        return grid.getGridObject(x, y);
     }
 }
