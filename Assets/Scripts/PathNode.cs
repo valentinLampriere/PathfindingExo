@@ -7,8 +7,6 @@ public class PathNode {
     private Grid<PathNode> grid;
     public int x, y;
 
-    public int distanceFromSource;
-
 
     public int gCost;
     public int hCost;
